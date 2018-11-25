@@ -2,13 +2,19 @@
     background-color: black;
     color: rgb(199, 199, 199);
     margin: 20px;
+    margin-top: 0px;
     padding: 20px;
+    border: 1px solid red;
 }
 
 .hide{
     display: none;
 }
 
+.a{
+    margin-left: 20px;
+    border: 1px solid blue;
+}
 
 body {background-color: rgb(116, 116, 116);}
 title{color: black;}
