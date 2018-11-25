@@ -1,0 +1,16 @@
+.output{
+    background-color: black;
+    color: rgb(199, 199, 199);
+    margin: 20px;
+    padding: 20px;
+}
+
+.hide{
+    display: none;
+}
+
+
+body {background-color: rgb(116, 116, 116);}
+title{color: black;}
+h1   {color: whitesmoke;}
+p    {color: white}
