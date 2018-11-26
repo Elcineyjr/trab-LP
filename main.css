@@ -1,4 +1,4 @@
-.output{
+.test {
     background-color: black;
     color: rgb(199, 199, 199);
     margin: 20px;
@@ -6,16 +6,21 @@
     padding: 20px;
 }
 
-.hide{
+.saida {
     display: none;
-}
-
-.saida{
     font-size: 20px;
     margin: 0px;
     margin-left: 20px;
 }
 
-body {background-color: rgb(160, 160, 160);}
-title{color: black}
-p    {color: black}
+body {
+    background-color: rgb(160, 160, 160);
+}
+
+title {
+    color: black
+}
+
+p {
+    color: black
+}
