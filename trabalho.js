@@ -17,7 +17,9 @@ var leitura = function(linesOfFile) {
         if(p.length > 1) coligacao = p[1]
 
         let v = line[4].split('.')
-        let votos = parseInt(v[0] + v[1]) // convertendo a quantidade de votos para inteiros
+        if(v.length > 1)
+            let votos = parseInt((v[0] * 1000) + v[1]) // convertendo a quantidade de votos para inteiros
+        else votos = parseInt(v[0])
 
         candidatos.push({nome, partido, coligacao, votos, eleito}) //guarda os candidatos em um vetor
     }
@@ -33,10 +35,10 @@ var eleitos = function(candidatos) {
         let cont = i + 1
         if(candidatos[i].eleito == true) {     //caso o candidado foi eleito
             let candidato = candidatos[i]
+            elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) '
             if(candidato.coligacao != null)   //caso tenha 
-                elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) ' + '- Coligação:' + candidato.coligacao + '<br>'
-            else
-                elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) ' + '<br>'
+                elected += '- Coligação:' + candidato.coligacao
+            elected += '<br>'
             
             totalVagas++;
         } else break
@@ -81,8 +83,8 @@ var openFile = function(event) {
             
             //candidatos eleitos e numero de vagas
             var e = eleitos(candidatos);
-            var vereadoresEleitos = e[0];
-            var vagas = e[1];
+            var vagas = e[0];
+            var vereadoresEleitos = e[1];
 
             //total de votos das eleicoes
             var totalVotos = totalVotosNominais(candidatos)
