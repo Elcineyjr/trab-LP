@@ -1,3 +1,63 @@
+var leitura = function(linesOfFile) {
+    let candidatos = []
+    for (let i = 1; i < linesOfFile.length; i++) {
+        let line = linesOfFile[i].split(';') //quebra a linha pelo ';'
+
+        //casting dos dados dos candidatos
+        if(line[0].includes('*'))
+            var eleito = true
+        else
+            eleito = false
+
+        let nome = line[2]
+
+        let p = line[3].split('-')
+        let partido = p[0].trim()
+        let coligacao = null
+        if(p.length > 1) coligacao = p[1]
+
+        let v = line[4].split('.')
+        let votos = parseInt(v[0] + v[1]) // convertendo a quantidade de votos para inteiros
+
+        candidatos.push({nome, partido, coligacao, votos, eleito}) //guarda os candidatos em um vetor
+    }
+    console.log(candidatos) //printa todos os candidatos no console
+    return candidatos
+}
+
+
+var eleitos = function(candidatos) {
+    let totalVagas = 0
+    let elected = ''
+    for (let i = 0; i < candidatos.length; i++) {
+        let cont = i + 1
+        if(candidatos[i].eleito == true) {     //caso o candidado foi eleito
+            let candidato = candidatos[i]
+            if(candidato.coligacao != null)   //caso tenha 
+                elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) ' + '- Coligação:' + candidato.coligacao + '<br>'
+            else
+                elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) ' + '<br>'
+            
+            totalVagas++;
+        } else break
+    }
+
+    return [totalVagas, elected];
+}
+
+
+//var maisVotados = function(candidatos){}  //  TODO
+
+
+
+var totalVotosNominais = function(candidatos){
+    let totalVotos = 0 
+    for(let i = 0; i < candidatos.length; i++)
+        totalVotos += candidatos[i].votos
+    
+    return totalVotos;
+}
+
 var openFile = function(event) {
     var input = event.target.files;
 
@@ -13,56 +73,28 @@ var openFile = function(event) {
             $('#content').append(iDiv);
             var node = document.getElementById("file_" + file);
 
-            // Criação dos relatórios
-            
+            //vetor com todas as linhas do arquivo
             let lines = text.split('\n');
-            node.innerHTML = 'Numero de vagas: ';
-            var eleitos = function() {
-                let totalVagas = 0;
-                let elected = '';
-                for (let i = 1; i < lines.length; i++) {
 
-                    let line = lines[i].split(';');     //divide a linha pelo ';'
+            //vetor de candidatos
+            var candidatos = leitura(lines)
+            
+            //candidatos eleitos e numero de vagas
+            var e = eleitos(candidatos);
+            var vereadoresEleitos = e[0];
+            var vagas = e[1];
 
-                    if(line[0].includes('*')) {     //entra no if se houver o '*' antes do candidato
+            //total de votos das eleicoes
+            var totalVotos = totalVotosNominais(candidatos)
 
-                        elected += i + ' - ' + line[2];     //adiciona o contador e o nome do candidato na string de saida
-
-                        let partido = line[3].split('-');   //divide a string pelo '-' pra separar partido da coligacao
-                        partido[0] = partido[0].trim();     //remove os espacos do inicio e final
-
-
-                        elected += ' (' + partido[0] + ', ' + line[4] + 'votos)';   //adiciona o partido do cadidato e o numero de votos na string de saida
-
-                        if(partido.length > 1) elected +=  ' - Coligação: ' + partido[1];
-                        elected += '<br>';
-                        totalVagas++;
-                    } else break;
-                }
-                node.innerHTML += totalVagas + '<br><br>Vereadores eleitos:<br>' + elected + '<br>';
-            }
-
-            var maisVotados = function() {
-                node.innerHTML += 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>';
-                let ordemVotos = [];
-                for (let i = 1; i < lines.length; i++) {
-
-                    let line = lines[i].split(';');
-                    let votos = line[4].split('.');
-                    let totalVotos = parseInt(votos[0]);    // convertendo a quantidade de votos para inteiros
-                    if(votos.length > 1)    // caso o candidato tenha pelo menos de 1000 votos
-                        totalVotos = parseInt((votos[0] * 1000)) + parseInt(votos[1]);
-                    line[4] = totalVotos;
-                    ordemVotos.push(line);
-                }
-                console.log(ordemVotos);
-
-                node.innerHTML += '<br><br>';
-            }
-            eleitos();
-            maisVotados();
+            //TODO candidatos mais votados
+            
+            //saida do programa
+            node.innerHTML = 'Numero de vagas: ' + vereadoresEleitos + '<br><br>Vereadores eleitos:<br>' + vagas + '<br>' + 'Total de votos nominais: ' + totalVotos
 
             $('.saida').css({ display: "block" });  //mostra a caixa de saida na tela
         };
     });
 };
+
+
