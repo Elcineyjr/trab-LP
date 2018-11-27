@@ -36,7 +36,7 @@ var eleitos = function(candidatos) {
         if(candidatos[i].eleito == true) {     //caso o candidado foi eleito
             let candidato = candidatos[i]
             elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) '
-            if(candidato.coligacao != null)   //caso tenha 
+            if(candidato.coligacao != null)   //caso tenha coligacao
                 elected += '- Coligação:' + candidato.coligacao
             elected += '<br>'
             
@@ -51,15 +51,21 @@ var eleitos = function(candidatos) {
 var maisVotados = function(candidatos, totalVagas) {
     let mostVoted = ''
     candidatos.sort(function(a, b) { return (b.votos) - (a.votos) })
-    // console.log(candidatos)
+    //candidatos.forEach(c => {
+    //    console.log(c.votos)
+    //}); 
+    
 
-    mostVoted += 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'
+    //mostVoted += 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'
     for(let i = 0; i < totalVagas; i++) {
-        mostVoted += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + 'votos) '
-        if(candidatos[i].coligacao != null)   //caso tenha 
-                elected += '- Coligação:' + candidatos[i].coligacao
-            elected += '<br>'
+        mostVoted += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + ' votos) '
+        if(candidatos[i].coligacao != null)   //caso tenha coligacao
+            mostVoted += '- Coligação:' + candidatos[i].coligacao
+        mostVoted += '<br>'
+        //console.log(i)
     }
+
+    return mostVoted
 }
 
 
@@ -101,11 +107,11 @@ var openFile = function(event) {
             //total de votos das eleicoes
             var totalVotos = totalVotosNominais(candidatos)
 
-            //TODO candidatos mais votados
+            //candidatos mais votados
+            var candidatosMaisVotados = maisVotados(candidatos, vagas);
             
             //saida do programa
-            maisVotados(candidatos);
-            node.innerHTML = 'Numero de vagas: ' + vereadoresEleitos + '<br><br>Vereadores eleitos:<br>' + vagas + '<br>' + 'Total de votos nominais: ' + totalVotos
+            node.innerHTML = 'Numero de vagas: ' + vereadoresEleitos + '<br><br>Vereadores eleitos:<br>' + vagas + '<br>' + 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'+ candidatosMaisVotados + 'Total de votos nominais: ' + totalVotos
 
             $('.saida').css({ display: "block" });  //mostra a caixa de saida na tela
         };
