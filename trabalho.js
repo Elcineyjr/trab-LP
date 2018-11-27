@@ -1,3 +1,12 @@
+var temColigacao = function(candidato) {
+    let temOuNao = ''
+    if(candidato.coligacao != null)
+        temOuNao += '- Coligação:' + candidato.coligacao
+    temOuNao += '<br>'
+
+    return temOuNao
+}
+
 var leitura = function(linesOfFile) {
     let candidatos = []
     for (let i = 1; i < linesOfFile.length; i++) {
@@ -23,7 +32,7 @@ var leitura = function(linesOfFile) {
 
         candidatos.push({nome, partido, coligacao, votos, eleito}) //guarda os candidatos em um vetor
     }
-    // console.log(candidatos) //printa todos os candidatos no console
+
     return candidatos
 }
 
@@ -33,12 +42,10 @@ var eleitos = function(candidatos) {
     let elected = ''
     for (let i = 0; i < candidatos.length; i++) {
         let cont = i + 1
-        if(candidatos[i].eleito == true) {     //caso o candidado foi eleito
+        if(candidatos[i].eleito == true) {     //caso o candidato foi eleito
             let candidato = candidatos[i]
             elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) '
-            if(candidato.coligacao != null)   //caso tenha coligacao
-                elected += '- Coligação:' + candidato.coligacao
-            elected += '<br>'
+            elected += temColigacao(candidato)
             
             totalVagas++;
         } else break
@@ -59,15 +66,24 @@ var maisVotados = function(candidatos, totalVagas) {
     //mostVoted += 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'
     for(let i = 0; i < totalVagas; i++) {
         mostVoted += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + ' votos) '
-        if(candidatos[i].coligacao != null)   //caso tenha coligacao
-            mostVoted += '- Coligação:' + candidatos[i].coligacao
-        mostVoted += '<br>'
-        //console.log(i)
+        mostVoted += temColigacao(candidatos[i])
     }
 
     return mostVoted
 }
 
+
+var seriamPorMajoritario = function(candidatos, totalVagas) {
+    let tadinhoDeles = ''
+    for(let i = 0; i < totalVagas; i++) {
+        if(!(candidatos[i].eleito)) {
+            tadinhoDeles += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + ' votos) '
+            tadinhoDeles += temColigacao(candidatos[i])
+        }
+    }
+
+    return tadinhoDeles
+}
 
 
 var totalVotosNominais = function(candidatos){
@@ -101,17 +117,23 @@ var openFile = function(event) {
             
             //candidatos eleitos e numero de vagas
             var e = eleitos(candidatos);
-            var vereadoresEleitos = e[0];
-            var vagas = e[1];
+            var vagas = e[0];
+            var vereadoresEleitos = e[1];
 
             //total de votos das eleicoes
             var totalVotos = totalVotosNominais(candidatos)
 
             //candidatos mais votados
             var candidatosMaisVotados = maisVotados(candidatos, vagas);
+
+            //candidatos eleitos caso a eleição fosse majoritária
+            var majoritario = seriamPorMajoritario(candidatos, vagas)
             
             //saida do programa
-            node.innerHTML = 'Numero de vagas: ' + vereadoresEleitos + '<br><br>Vereadores eleitos:<br>' + vagas + '<br>' + 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'+ candidatosMaisVotados + 'Total de votos nominais: ' + totalVotos
+            node.innerHTML = 'Numero de vagas: ' + vagas + '<br><br>Vereadores eleitos:<br>' + vereadoresEleitos + 
+            '<br>Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>' + 
+            candidatosMaisVotados + '<br>Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:<br>(com sua posição no ranking de mais votados)<br>' + 
+            majoritario + '<br>Total de votos nominais: ' + totalVotos
 
             $('.saida').css({ display: "block" });  //mostra a caixa de saida na tela
         };
