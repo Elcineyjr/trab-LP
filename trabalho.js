@@ -1,3 +1,7 @@
+var padraoTabelasCandidatos = function(candidato) {
+    return ' - ' + candidato.nome + ' (' + candidato.partido + ', ' + candidato.votos + ' votos) '
+}
+
 var temColigacao = function(candidato) {
     let temOuNao = ''
     if(candidato.coligacao != null)
@@ -41,10 +45,9 @@ var eleitos = function(candidatos) {
     let totalVagas = 0
     let elected = ''
     for (let i = 0; i < candidatos.length; i++) {
-        let cont = i + 1
         if(candidatos[i].eleito == true) {     //caso o candidato foi eleito
             let candidato = candidatos[i]
-            elected += cont + ' - ' + candidato.nome + '(' + candidato.partido + ', ' + candidato.votos + ' votos) '
+            elected += (i+1) + padraoTabelasCandidatos(candidato)
             elected += temColigacao(candidato)
             
             totalVagas++;
@@ -58,15 +61,11 @@ var eleitos = function(candidatos) {
 var maisVotados = function(candidatos, totalVagas) {
     let mostVoted = ''
     candidatos.sort(function(a, b) { return (b.votos) - (a.votos) })
-    //candidatos.forEach(c => {
-    //    console.log(c.votos)
-    //}); 
-    
 
-    //mostVoted += 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'
     for(let i = 0; i < totalVagas; i++) {
-        mostVoted += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + ' votos) '
-        mostVoted += temColigacao(candidatos[i])
+        let candidato = candidatos[i]
+        mostVoted += (i+1) + padraoTabelasCandidatos(candidato)
+        mostVoted += temColigacao(candidato)
     }
 
     return mostVoted
@@ -76,9 +75,10 @@ var maisVotados = function(candidatos, totalVagas) {
 var seriamPorMajoritario = function(candidatos, totalVagas) {
     let tadinhoDeles = ''
     for(let i = 0; i < totalVagas; i++) {
-        if(!(candidatos[i].eleito)) {
-            tadinhoDeles += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + ' votos) '
-            tadinhoDeles += temColigacao(candidatos[i])
+        let candidato = candidatos[i]
+        if(!(candidato.eleito)) {
+            tadinhoDeles += (i+1) + padraoTabelasCandidatos(candidato)
+            tadinhoDeles += temColigacao(candidato)
         }
     }
 
@@ -86,13 +86,30 @@ var seriamPorMajoritario = function(candidatos, totalVagas) {
 }
 
 
+var eleitosPorBeneficio = function(candidatos, totalVagas) {
+    let sortudos = ''
+    for(let i = totalVagas; i < candidatos.length; i++) {
+        let candidato = candidatos[i]
+        if(candidato.eleito) {
+            sortudos += (i+1) + padraoTabelasCandidatos(candidato)
+            sortudos += temColigacao(candidato)
+        }
+    }
+
+    return sortudos
+}
+
+
 var totalVotosNominais = function(candidatos){
     let totalVotos = 0 
-    for(let i = 0; i < candidatos.length; i++)
-        totalVotos += candidatos[i].votos
+    
+    candidatos.forEach(candidato => {
+        totalVotos += candidato.votos
+    });
     
     return totalVotos;
 }
+
 
 var openFile = function(event) {
     var input = event.target.files;
@@ -124,20 +141,22 @@ var openFile = function(event) {
             var totalVotos = totalVotosNominais(candidatos)
 
             //candidatos mais votados
-            var candidatosMaisVotados = maisVotados(candidatos, vagas);
+            var candidatosMaisVotados = maisVotados(candidatos, vagas)
 
             //candidatos eleitos caso a eleição fosse majoritária
             var majoritario = seriamPorMajoritario(candidatos, vagas)
+
+            //candidatos eleitos por beneficio
+            var beneficiados = eleitosPorBeneficio(candidatos, vagas)
             
             //saida do programa
             node.innerHTML = 'Numero de vagas: ' + vagas + '<br><br>Vereadores eleitos:<br>' + vereadoresEleitos + 
             '<br>Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>' + 
             candidatosMaisVotados + '<br>Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:<br>(com sua posição no ranking de mais votados)<br>' + 
-            majoritario + '<br>Total de votos nominais: ' + totalVotos
+            majoritario + '<br>Eleitos, que se beneficiaram do sistema proporcional:<br>(com sua posição no ranking de mais votados)<br>' + 
+            beneficiados + '<br>Total de votos nominais: ' + totalVotos
 
             $('.saida').css({ display: "block" });  //mostra a caixa de saida na tela
         };
     });
 };
-
-
