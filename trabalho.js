@@ -18,12 +18,12 @@ var leitura = function(linesOfFile) {
 
         let v = line[4].split('.')
         if(v.length > 1)
-            let votos = parseInt((v[0] * 1000) + v[1]) // convertendo a quantidade de votos para inteiros
+            var votos = parseInt((v[0] * 1000)) + parseInt(v[1]) // convertendo a quantidade de votos para inteiros
         else votos = parseInt(v[0])
 
         candidatos.push({nome, partido, coligacao, votos, eleito}) //guarda os candidatos em um vetor
     }
-    console.log(candidatos) //printa todos os candidatos no console
+    // console.log(candidatos) //printa todos os candidatos no console
     return candidatos
 }
 
@@ -48,7 +48,19 @@ var eleitos = function(candidatos) {
 }
 
 
-//var maisVotados = function(candidatos){}  //  TODO
+var maisVotados = function(candidatos, totalVagas) {
+    let mostVoted = ''
+    candidatos.sort(function(a, b) { return (b.votos) - (a.votos) })
+    // console.log(candidatos)
+
+    mostVoted += 'Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):<br>'
+    for(let i = 0; i < totalVagas; i++) {
+        mostVoted += (i+1) + ' - ' + candidatos[i].nome + ' (' + candidatos[i].partido + ', ' + candidatos[i].votos + 'votos) '
+        if(candidatos[i].coligacao != null)   //caso tenha 
+                elected += '- Coligação:' + candidatos[i].coligacao
+            elected += '<br>'
+    }
+}
 
 
 
@@ -83,8 +95,8 @@ var openFile = function(event) {
             
             //candidatos eleitos e numero de vagas
             var e = eleitos(candidatos);
-            var vagas = e[0];
-            var vereadoresEleitos = e[1];
+            var vereadoresEleitos = e[0];
+            var vagas = e[1];
 
             //total de votos das eleicoes
             var totalVotos = totalVotosNominais(candidatos)
@@ -92,6 +104,7 @@ var openFile = function(event) {
             //TODO candidatos mais votados
             
             //saida do programa
+            maisVotados(candidatos);
             node.innerHTML = 'Numero de vagas: ' + vereadoresEleitos + '<br><br>Vereadores eleitos:<br>' + vagas + '<br>' + 'Total de votos nominais: ' + totalVotos
 
             $('.saida').css({ display: "block" });  //mostra a caixa de saida na tela
