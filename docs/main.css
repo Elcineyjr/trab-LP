@@ -1,0 +1,26 @@
+.test {
+    background-color: black;
+    color: rgb(199, 199, 199);
+    margin: 20px;
+    margin-top: 0px;
+    padding: 20px;
+}
+
+.saida {
+    display: none;
+    font-size: 19px;
+    margin: 0px;
+    margin-left: 20px;
+}
+
+body {
+    background-color: rgb(160, 160, 160);
+}
+
+title {
+    color: black
+}
+
+p {
+    color: black
+}
